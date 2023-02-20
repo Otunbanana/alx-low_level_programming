@@ -7,37 +7,27 @@
 
 int main(void)
 {
-int tens;
-int ones;
-int t;
-int o;
+int i, j;
 
-for (tens = '0'; tens <= '9'; tens++) /*print first two digit combo*/
+for (i = 0; i <= 99; i++)
 {
-for (ones = '0'; ones <= '9'; ones++)
+for (j = 0; j <= 99; j++)
 {
-for (t = tens; t <= '9'; t++) /*print second of pair*/
+if (i < j && i != j)
 {
-for (o = ones + 1; o <= '9'; o++)
-{
-putchar(tens);
-putchar(ones);
+putchar((i / 10) + '0');
+putchar((i % 10) + '0');
 putchar(' ');
-putchar(t);
-putchar(o);
-
-if (!((tens == '9' && ones == '8') &&
-(t == '9' && o == '9')))
+putchar((j / 10) + '0');
+putchar((j % 10) + '0');
+if (i != 98 || j != 99)
 {
 putchar(',');
 putchar(' ');
 }
 }
-o = '0';
-}
 }
 }
 putchar('\n');
-
 return (0);
 }
