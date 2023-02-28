@@ -1,9 +1,8 @@
 #include "main.h"
 /**
-* rev_string -  reverse a string
-* @s: String to print
-*
-* Return: void
+* _strlen - returns the length of a string
+* @s: string
+* Return: length
 */
 int _strlen(char *s)
 {
@@ -17,8 +16,12 @@ s++;
 
 return (len);
 }
-
-
+/**
+* rev_string -  reverse a string
+* @s: String to print
+*
+* Return: void
+*/
 void rev_string(char *s)
 {
 int i = 0;
