@@ -7,30 +7,44 @@
 * Return: int value
 */
 
-int _strcmp(const char *s1, const char *s2)
+int _strcmp(char *s1, char *s2)
 {
-int i;
-for (i = 0; s1[i] != '\0' && s2[i] != '\0'; i++)
+int a = 0, b = 0, c = 0, r = 0, lim;
+
+while (s1[a])
 {
-if (s1[i] < s2[i])
-{
-return -1;
+a++;
 }
-else if (s1[i] > s2[i])
+
+while (s2[b])
 {
-return 1;
+b++;
 }
-}
-if (s1[i] == '\0' && s2[i] == '\0')
+
+if (a <= b)
 {
-return 0;
-}
-else if (s1[i] == '\0')
-{
-return -1;
+lim = a;
 }
 else
 {
-return 1;
+lim = b;
 }
+
+while (c <= lim)
+{
+if (s1[c] == s2[c])
+{
+c++;
+continue;
+}
+else
+{
+r = s1[c] - s2[c];
+break;
+}
+
+c++;
+}
+
+return (r);
 }
