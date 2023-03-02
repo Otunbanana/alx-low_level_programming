@@ -1,0 +1,19 @@
+#include "main.h"
+/**
+* _strcmp - Compares two strings
+* @s1: The first string
+* @s2: The second string
+*
+* Return: int value
+*/
+
+int _strcmp(const char *s1, const char *s2)
+{
+while (*s1 && (*s1 == *s2))
+{
+s1++;
+s2++;
+}
+
+return (*s1 - *s2);
+}
