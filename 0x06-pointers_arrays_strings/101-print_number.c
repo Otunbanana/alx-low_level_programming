@@ -6,20 +6,14 @@
 */
 void print_number(int n)
 {
-int digits = 0, divisor = 1;
-
 if (n < 0)
 {
 _putchar('-');
 n *= -1;
 }
 
-while (n / divisor > 9)
-divisor *= 10;
+if (n / 10 != 0)
+print_number(n / 10);
 
-do {
-_putchar(n / divisor + '0');
-digits++;
-divisor /= 10;
-} while (divisor != 0 || digits == 0);
+_putchar(n % 10 + '0');
 }
