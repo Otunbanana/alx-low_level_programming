@@ -1,18 +1,28 @@
 #include "main.h"
 /**
-* print_chessboard - locates a substring
-* @a: array
+* leet - Encodes a string into 1337
+* @s: The string to encode
+*
+* Return: The encoded string
 */
 
-void print_chessboard(char (*a)[8])
+char *leet(char *s)
 {
 int i, j;
-for (i = 0; i < 8; i++)
+char letter[] = {'A', 'E', 'O', 'T', 'L'};
+char digit[] = {'4', '3', '0', '7', '1'};
+
+for (i = 0; s[i] != '\0'; i++)
 {
-for (j = 0; j < 8; j++)
+for (j = 0; j < 5; j++)
 {
-_putchar(a[i][j]);
+if (s[i] == letter[j] || s[i] == letter[j] + 32)
+{
+s[i] = digit[j];
+break;
 }
-_putchar('\n');
 }
+}
+
+return (s);
 }
