@@ -1,23 +1,22 @@
-#include <stdio.h>
+#include "main.h"
 
-int main(void)
-{
-int n;
-int w[5];
-int *d;
-
-w[2] = 1024;
-d = &n;
-/*
-* write your line of code here...
-* Remember:
-* - you are not allowed to use a
-* - you are not allowed to modify p
-* - only one statement
-* - you are not allowed to code anything else than this line of code
+/**
+* print_number - Prints an integer using _putchar function
+* @n: The integer to print
 */
-*(d + 5) = 98;
-/* ...so that this prints 98\n */
-printf("w[2] = %d\n", w[2]);
-return (0);
+void print_number(int n)
+{
+unsigned int number;
+
+number = n;
+if (n < 0)
+{
+_putchar(45);
+number = -n;
+}
+
+if (number / 10 != 0)
+print_number(number / 10);
+
+_putchar(number % 10 + '0');
 }
