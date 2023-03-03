@@ -7,19 +7,22 @@
 
 char *rot13(char *n)
 {
-int i;
+int j, aux = 0, i = 0;
+char in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+char out[] = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
 
-for (i = 0; n[i] != '\0'; i++)
+while (n[i] != '\0')
 {
-if (n[i] >= 'a' && n[i] <= 'z')
+aux = 0;
+for (j = 0; (j < 52) && aux == 0; j++)
 {
-n[i] = ((n[i] - 'a') + 13) % 26 + 'a';
-}
-else if (n[i] >= 'A' && n[i] <= 'Z')
+if ((n[i] == in[j]) && aux == 0)
 {
-n[i] = ((n[i] - 'A') + 13) % 26 + 'A';
+n[i] = out[j];
+aux = 1;
 }
 }
-
+i++;
+}
 return (n);
 }
