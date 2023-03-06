@@ -1,8 +1,10 @@
 #include "main.h"
+#include <stddef.h>
 /**
 * _strchr - locates a character in a string.
 * @s: input array
 * @c: char to locate
+* @NULL: return NULL Values
 * Return: pointer
 */
 
