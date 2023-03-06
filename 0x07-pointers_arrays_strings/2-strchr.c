@@ -3,7 +3,6 @@
 * _strchr - locates a character in a string.
 * @s: input array
 * @c: char to locate
-* @NULL: return NULL Values
 * Return: pointer
 */
 
@@ -21,5 +20,5 @@ if (c == '\0')
 {
 return (s);
 }
-return 0;
+return (0);
 }
