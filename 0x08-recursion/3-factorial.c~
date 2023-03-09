@@ -18,8 +18,7 @@ return (1);
 } else
 {
 int result = 1;
-int i;
-for (i = 1; i <= n; ++i)
+for (int i = 1; i <= n; ++i)
 {
 result *= i;
 }
