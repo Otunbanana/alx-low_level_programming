@@ -16,6 +16,8 @@ int total_length;
 int i;
 int offset;
 int length;
+char *str;
+
 if (ac == 0 || av == NULL)
 {
 return (NULL);
@@ -27,7 +29,7 @@ for (i = 0; i < ac; i++)
 total_length += strlen(av[i]) + 1;
 }
 
-char *str = (char *) malloc(total_length * sizeof(char));
+str = malloc(total_length);
 if (str == NULL)
 {
 return (NULL);
