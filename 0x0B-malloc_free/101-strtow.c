@@ -14,7 +14,7 @@ char **words;
 int i, j, k, len, wordcount;
 
 if (str == NULL || *str == '\0')
-return (NULL);
+return (0);
 
 len = strlen(str);
 wordcount = 0;
@@ -27,7 +27,7 @@ wordcount++;
 
 words = (char **) malloc((wordcount + 1) * sizeof(char *));
 if (words == NULL)
-return (NULL);
+return (0);
 
 i = 0;
 j = 0;
@@ -40,7 +40,7 @@ while (k < len && !isspace(str[k]))
 k++;
 words[j] = (char *) malloc((k - i + 1) * sizeof(char));
 if (words[j] == NULL)
-return (NULL);
+return (0);
 strncpy(words[j], str + i, k - i);
 words[j][k - i] = '\0';
 j++;
