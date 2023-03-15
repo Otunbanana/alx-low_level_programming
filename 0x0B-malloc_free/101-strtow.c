@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-
+#include <ctype.h>
 /**
 * **strtow - splits a string into words
 * @str: string
