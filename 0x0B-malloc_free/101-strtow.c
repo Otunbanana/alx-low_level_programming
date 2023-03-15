@@ -1,21 +1,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdio.h>
-
 /**
-* strtow - splits a string into words
+* **strtow - splits a string into words
 * @str: string
 *
-* Return: array of strings
+* Return: Always zero
 */
+
 char **strtow(char *str)
 {
 char **words;
 int i, j, k, len, wordcount;
 
 if (str == NULL || *str == '\0')
-return (char **) malloc(sizeof(char *));
+return (0);
 
 len = strlen(str);
 wordcount = 0;
@@ -28,7 +27,7 @@ wordcount++;
 
 words = (char **) malloc((wordcount + 1) * sizeof(char *));
 if (words == NULL)
-return (NULL);
+return (0);
 
 i = 0;
 j = 0;
@@ -41,7 +40,7 @@ while (k < len && !isspace(str[k]))
 k++;
 words[j] = (char *) malloc((k - i + 1) * sizeof(char));
 if (words[j] == NULL)
-return (NULL);
+return (0);
 strncpy(words[j], str + i, k - i);
 words[j][k - i] = '\0';
 j++;
@@ -49,21 +48,6 @@ i = k;
 }
 
 words[j] = NULL;
-
-if (words[0] == NULL)
-{
-free(words);
-return (char **) malloc(sizeof(char *));
-}
-
-for (i = 0; words[i] != NULL; i++)
-{
-if (strlen(words[i]) == 7)
-{
-printf("[stderr]: [Anything]\n");
-break;
-}
-}
 
 return (words);
 }
