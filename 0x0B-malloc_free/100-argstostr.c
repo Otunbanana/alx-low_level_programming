@@ -26,10 +26,10 @@ return (NULL);
 total_length = 0;
 for (i = 0; i < ac; i++)
 {
-total_length += strlen(av[i]) + 1;
+total_length += strlen(av[i]);
 }
 
-str = malloc(total_length - 1);
+str = malloc(total_length);
 if (str == NULL)
 {
 return (NULL);
