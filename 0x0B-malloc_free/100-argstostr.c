@@ -3,48 +3,36 @@
 #include <string.h>
 
 /**
-* *argstostr - concatenates all the arguments of your program
+* argstostr - concatenates all the arguments of your program
 * @ac: arguments count
 * @av: argument
 *
-* Return: Always zero
+* Return: pointer to a new string or NULL if it fails
 */
-
 char *argstostr(int ac, char **av)
 {
-int total_length;
-int i;
-int offset;
-int length;
+int total_length = 0;
 char *str;
+int i, j, k;
 
 if (ac == 0 || av == NULL)
-{
 return (NULL);
-}
 
-total_length = 0;
-for (i = 1; i < ac; i++)
-{
+for (i = 0; i < ac; i++)
 total_length += strlen(av[i]) + 1;
-}
 
-str = malloc(total_length * (sizeof(char)));
+str = malloc(total_length + 1);
 if (str == NULL)
-{
 return (NULL);
-}
 
-offset = 0;
+k = 0;
 for (i = 0; i < ac; i++)
 {
-length = strlen(av[i]);
-memcpy(str + offset, av[i], length);
-str[offset + length] = '\n';
-offset += length + 1;
+for (j = 0; av[i][j] != '\0'; j++, k++)
+str[k] = av[i][j];
+str[k++] = '\n';
 }
-
-str[total_length - 1] = '\0';
+str[k] = '\0';
 
 return (str);
 }
