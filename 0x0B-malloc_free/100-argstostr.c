@@ -29,7 +29,7 @@ for (i = 0; i < ac; i++)
 total_length += strlen(av[i]) + 1;
 }
 
-str = malloc(total_length);
+str = malloc(total_length -1);
 if (str == NULL)
 {
 return (NULL);
