@@ -37,6 +37,5 @@ if (new_ptr != NULL)
 memcpy(new_ptr, ptr, (new_size < old_size) ? new_size : old_size);
 free(ptr);
 }
-
 return (new_ptr);
 }
