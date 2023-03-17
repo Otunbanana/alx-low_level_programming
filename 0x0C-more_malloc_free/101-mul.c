@@ -1,0 +1,53 @@
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include "main.h"
+
+/**
+* *validate_input - multiplies two positive numbers
+* @input: user input
+*
+* Return: Always 0.
+*/
+
+int validate_input(char *input)
+{
+int i = 0;
+while (input[i] != '\0')
+{
+if (!isdigit(input[i]))
+{
+return (0);
+}
+i++;
+}
+return (1);
+}
+
+/**
+* main - run program
+* @argc: first
+* @argv: second
+*
+* Return: zero.
+*/
+
+int main(int argc, char **argv)
+{
+int num1;
+int num2;
+if (argc != 3)
+{
+printf("Error\n");
+return (98);
+}
+if (!validate_input(argv[1]) || !validate_input(argv[2]))
+{
+printf("Error\n");
+return (98);
+}
+num1 = atoi(argv[1]);
+num2 = atoi(argv[2]);
+printf("%d\n", num1 *num2);
+return (0);
+}
