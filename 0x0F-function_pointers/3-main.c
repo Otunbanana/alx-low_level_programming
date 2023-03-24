@@ -5,8 +5,8 @@
 
 /**
 * main - performs simple operations
-* @argc: first argument 
-* @argv: second argument 
+* @argc: first argument
+* @argv: second argument
 *
 * Return: always return 0
 */
