@@ -1,36 +1,83 @@
 #include "3-calc.h"
 #include <stdlib.h>
+#include <stdio.h>
+
 
 /**
-* main - performs simple operations
-* @argc: first argument 
-* @argv: second argument 
+* op_add - add operator
+* @a: first input
+* @b: second input
 *
-* Return: always return 0
+* Return: return 0
 */
-int main(int argc, char *argv[])
+int op_add(int a, int b)
 {
-int (*oprt)(int, int);
-
-
-if (argc != 4)
-{
-printf("Error\n");
-exit(98);
+return (a + b);
 }
 
 
-oprt = get_op_func(argv[2]);
-
-
-if (!oprt)
+/**
+* op_sub - subtract operator
+* @a: first input
+* @b: second input
+*
+* Return: return 0
+*/
+int op_sub(int a, int b)
 {
-printf("Error\n");
-exit(99);
+return (a - b);
 }
 
 
-printf("%d\n", oprt(atoi(argv[1]), atoi(argv[3])));
-return (0);
+/**
+* op_mul - minus operator
+* @a: first input
+* @b: second input
+*
+* Return: return 0
+*/
+int op_mul(int a, int b)
+{
+return (a * b);
+}
+
+
+/**
+* op_div - divide operator
+* @a: first input
+* @b: second input
+*
+* Return: return 0
+*/
+int op_div(int a, int b)
+{
+if (b == 0)
+{
+printf("Error\n");
+exit(100);
+}
+
+
+return (a / b);
+}
+
+
+/**
+* op_mod - modulo operator
+* @a: first input
+* @b: second input
+*
+* Return: return 0
+*/
+int op_mod(int a, int b)
+{
+if (b == 0)
+{
+printf("Error\n");
+exit(100);
+}
+
+
+return (a % b);
 }
 
