@@ -11,18 +11,37 @@
 */
 int append_text_to_file(const char *filename, char *text_content)
 {
-FILE *file;
-if (filename == NULL)
+int fd, len, wrote;
+
+if (!filename)
 return (-1);
 
-file = fopen(filename, "a");
-if (file == NULL)
+/* Open file if it exists */
+fd = open(filename, O_WRONLY | O_APPEND);
+if (fd == -1)
 return (-1);
 
-if (text_content != NULL)
-fprintf(file, "%s", text_content);
-
-fclose(file);
+/* If nothing to write, still successful */
+if (!text_content)
+{
+close(fd);
 return (1);
 }
 
+/* Write text_content to file */
+len = 0;
+while (text_content[len] != '\0')
+len++;
+
+wrote = write(fd, text_content, len);
+if (wrote == -1 || wrote != len)
+{
+close(fd);
+return (-1);
+}
+
+/* Close file */
+close(fd);
+
+return (1);
+}
