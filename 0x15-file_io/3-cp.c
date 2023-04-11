@@ -7,73 +7,151 @@
 
 #define BUFFER_SIZE 1024
 
-int main(int argc, char *argv[]) {
-int fd_from, fd_to;
-ssize_t nread;
-char buffer[BUFFER_SIZE];
-struct stat st;
+int open_file_for_reading(const char *file_name);
+int open_file_for_writing(const char *file_name);
+void copy_file_content(int fd_from, int fd_to);
+void set_file_permissions(const char *file_name, int fd_from);
+void close_file(int fd, const char *file_name);
 
-/* Check the number of arguments*/
+/**
+* main - Entry point for the cp program.
+* @argc: The number of command-line arguments.
+* @argv: An array of strings containing the command-line arguments.
+* Return: On success, returns 0. On failure, returns a non-zero value.
+*/
+
+int main(int argc, char *argv[])
+{
+int fd_from, fd_to;
+
+/* Check the number of arguments */
 if (argc != 3)
 {
-dprintf(STDERR_FILENO, "Usage: %s file_from file_to\n", argv[0]);
+fprintf(stderr, "Usage: %s file_from file_to\n", argv[0]);
 exit(97);
 }
 
-/* Open the file_from for reading*/
-fd_from = open(argv[1], O_RDONLY);
-if (fd_from == -1)
-{
-dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
-exit(98);
-}
+/* Open the file_from for reading */
+fd_from = open_file_for_reading(argv[1]);
 
-/* Truncate the file_to if it exists*/
-fd_to = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-if (fd_to == -1)
-{
-dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
-exit(99);
-}
+/*
+ * Open the file_to for writing
+ * (and creating if it does not exist)
+*/
+fd_to = open_file_for_writing(argv[2]);
 
 /* Copy the content of the file_from to the file_to*/
+copy_file_content(fd_from, fd_to);
+
+/* Set the file permissions of the file_to*/
+set_file_permissions(argv[2], fd_from);
+
+/* Close the file descriptors*/
+close_file(fd_from, argv[1]);
+close_file(fd_to, argv[2]);
+
+return (0);
+}
+
+/**
+* open_file_for_reading - Opens a file for reading.
+* @file_name: The name of the file to be opened.
+* Return: On success, returns a file descriptor for the opened file.
+*/
+
+int open_file_for_reading(const char *file_name)
+{
+int fd = open(file_name, O_RDONLY);
+if (fd == -1)
+{
+fprintf(stderr, "Error: Can't read from file %s\n", file_name);
+exit(98);
+}
+return (fd);
+}
+
+/**
+* open_file_for_writing - Opens a file for writing.
+* @file_name: The name of the file to be opened.
+* Return: On success, returns a file descriptor for the opened file.
+*/
+
+int open_file_for_writing(const char *file_name)
+{
+int fd;
+fd = open(file_name, O_WRONLY | O_CREAT | O_TRUNC,
+		S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+if (fd == -1)
+{
+fprintf(stderr, "Error: Can't write to %s\n", file_name);
+exit(99);
+}
+return (fd);
+}
+
+/**
+* copy_file_content - Copies the contents of one file to another.
+* @fd_from: The name of the source file.
+* @fd_to: The name of the destination file.
+* Return: On success, returns 1. On failure, prints an error
+* message to the standard error stream and exits with a non-zero value.
+*/
+
+void copy_file_content(int fd_from, int fd_to)
+{
+ssize_t nread;
+char buffer[BUFFER_SIZE];
 while ((nread = read(fd_from, buffer, BUFFER_SIZE)) > 0)
 {
 if (write(fd_to, buffer, nread) != nread)
 {
-dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
+fprintf(stderr, "Error: Can't write to file %d\n", fd_to);
 exit(99);
 }
 }
 if (nread == -1)
 {
-dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+fprintf(stderr, "Error: Can't read from file descriptor %d\n", fd_from);
 exit(98);
 }
+}
 
-/* Check the file size of the file_from and set the permissions of the file_to*/
+/**
+* set_file_permissions - Sets the permissions of a file.
+* @file_name: The name of the file.
+* @fd_from: The name of the source file.
+* Return: On success, returns 0. On failure, prints an error
+* message to the standard error stream and exits with code 100.
+*/
+
+void set_file_permissions(const char *file_name, int fd_from)
+{
+struct stat st;
 if (fstat(fd_from, &st) == -1)
 {
-dprintf(STDERR_FILENO, "Error: Can't get file size of %s\n", argv[1]);
+fprintf(stderr, "Error: Can't get file size of %s\n", file_name);
 exit(100);
 }
-if (fchmod(fd_to, st.st_mode) == -1)
+if (fchmod(fd_from, st.st_mode) == -1)
 {
-dprintf(STDERR_FILENO, "Error: Can't set file permissions of %s\n", argv[2]);
+fprintf(stderr, "Error: Can't set file permissions of %s\n", file_name);
 exit(100);
+}
 }
 
-/* Close the file descriptors*/
-if (close(fd_from) == -1)
-{
-dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from);
-exit(100);
-}
-if (close(fd_to) == -1)
-{
-dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
-exit(100);
-}
+/**
+* close_file - Closes a file descriptor.
+* @fd: The file descriptor to be closed.
+* @file_name: The name of the file.
+* Return: On success, returns 0. On failure, prints an error
+* message to the standard error stream and exits with code 100.
+*/
 
-return (0);
+void close_file(int fd, const char *file_name)
+{
+if (close(fd) == -1)
+{
+fprintf(stderr, "Error: Can't close file %d of file %s", fd, file_name);
+exit(101);
+}
 }
