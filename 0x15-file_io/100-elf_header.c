@@ -13,7 +13,6 @@
 
 int main(int argc, char *argv[])
 {
-/* Check the number of arguments. */
 FILE *fp;
 Elf32_Ehdr ehdr;
 size_t nread;
@@ -23,7 +22,6 @@ fprintf(stderr, "Usage: %s elf_filename\n", argv[0]);
 return (1);
 }
 
-/* Open the file. */
 fp = fopen(argv[1], "r");
 if (fp == NULL)
 {
@@ -31,7 +29,6 @@ perror("fopen");
 return (1);
 }
 
-/* Read the ELF header. */
 nread = fread(&ehdr, sizeof(ehdr), 1, fp);
 if (nread != 1)
 {
@@ -39,7 +36,6 @@ perror("fread");
 return (1);
 }
 
-/* Print the ELF header information. */
 printf("ELF Header:\n");
 printf("  Magic:   %#x\n", ehdr.e_ident[EI_MAG0]);
 printf("  Class:        %d\n", ehdr.e_class);
@@ -54,8 +50,6 @@ ehdr.e_type == ET_REL ? "Relocatable file" :
 ehdr.e_type == ET_CORE ? "Core file" : "Unknown");
 printf("  Entry point address:               0x%x\n", ehdr.e_entry);
 
-/* Close the file. */
 fclose(fp);
-
 return (0);
 }
