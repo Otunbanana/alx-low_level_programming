@@ -1,77 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <elf.h>
 
-int main(int argc, char *argv[])
-{
-int fd;
-Elf64_Ehdr elf_header;
-ssize_t n;
+/**
+* main - displays the information contained in the ELF header at the start
+* of an ELF file.
+*
+* @param argc: The number of arguments passed on the command line.
+* @param argv: The arguments passed on the command line.
+* @return 0 on success, 1 on error.
+*/
 
+int main(int argc, char *argv[]) {
+/* Check the number of arguments. */
+FILE *fp;
+Elf32_Ehdr ehdr;
+size_t nread;
 if (argc != 2)
 {
 fprintf(stderr, "Usage: %s elf_filename\n", argv[0]);
-exit(98);
+return (1);
 }
 
-fd = open(argv[1], O_RDONLY);
-if (fd < 0)
+/* Open the file. */
+fp = fopen(argv[1], "r");
+if (fp == NULL)
 {
-fprintf(stderr, "Error: cannot open file '%s'\n", argv[1]);
-exit(98);
+perror("fopen");
+return (1);
 }
 
-n = read(fd, &elf_header, sizeof(Elf64_Ehdr));
-if (n != sizeof(Elf64_Ehdr) || memcmp(elf_header.e_ident, ELFMAG, SELFMAG) != 0)
+/* Read the ELF header. */
+nread = fread(&ehdr, sizeof(ehdr), 1, fp);
+if (nread != 1)
 {
-fprintf(stderr, "Error: '%s' is not an ELF file\n", argv[1]);
-exit(98);
+perror("fread");
+return (1);
 }
 
-printf("Magic:   ");
-for (int i = 0; i < EI_NIDENT; i++)
-{
-printf("%02x ", elf_header.e_ident[i]);
-}
-printf("\n");
+/* Print the ELF header information. */
+printf("ELF Header:\n");
+printf("  Magic:   %#x\n", ehdr.e_ident[EI_MAG0]);
+printf("  Class:                             %d\n", ehdr.e_class);
+printf("  Data:                              %d\n", ehdr.e_data);
+printf("  Version:                           %d (current)\n", ehdr.e_version);
+printf("  OS/ABI:                            %s\n", elf_get_osabi(ehdr.e_ident[EI_OSABI]));
+printf("  ABI Version:                       %d\n", ehdr.e_abiversion);
+printf("  Type:                              %d (%s)\n", ehdr.e_type,
+ehdr.e_type == ET_EXEC ? "Executable file" :
+ehdr.e_type == ET_DYN ? "Shared object file" :
+ehdr.e_type == ET_REL ? "Relocatable file" :
+ehdr.e_type == ET_CORE ? "Core file" : "Unknown");
+printf("  Entry point address:               0x%x\n", ehdr.e_entry);
 
-printf("Class: %s\n", elf_header.e_ident[EI_CLASS] == ELFCLASS32 ? "ELF32" : "ELF64");
-printf("Data: %s\n", elf_header.e_ident[EI_DATA] == ELFDATA2LSB ? "2's 
-complement, little endian" : "2's complement, big endian");
-printf("Version: %d (current)\n", elf_header.e_ident[EI_VERSION]);
-printf("OS/ABI:                            ");
-switch (elf_header.e_ident[EI_OSABI])
-{
-case ELFOSABI_SYSV: printf("UNIX System V ABI\n"); break;
-case ELFOSABI_HPUX: printf("HP-UX ABI\n"); break;
-case ELFOSABI_NETBSD: printf("NetBSD ABI\n"); break;
-case ELFOSABI_LINUX: printf("Linux ABI\n"); break;
-case ELFOSABI_SOLARIS: printf("Solaris ABI\n"); break;
-case ELFOSABI_AIX: printf("AIX ABI\n"); break;
-case ELFOSABI_IRIX: printf("IRIX ABI\n"); break;
-case ELFOSABI_FREEBSD: printf("FreeBSD ABI\n"); break;
-case ELFOSABI_OPENBSD: printf("OpenBSD ABI\n"); break;
-case ELFOSABI_ARM: printf("ARM architecture ABI\n"); break;
-case ELFOSABI_STANDALONE: printf("Standalone (embedded) ABI\n"); break;
-default: printf("<unknown>\n"); break;
-}
-printf("ABI Version: %d\n", elf_header.e_ident[EI_ABIVERSION]);
+/* Close the file. */
+fclose(fp);
 
-printf("Type:                              ");
-switch (elf_header.e_type)
-{
-case ET_NONE: printf("No file type\n"); break;
-case ET_REL: printf("Relocatable file\n"); break;
-case ET_EXEC: printf("Executable file\n"); break;
-case ET_DYN: printf("Shared object file\n"); break;
-case ET_CORE: printf("Core file\n"); break;
-default: printf("<unknown>\n"); break;
-}
-
-printf("Entry point address: 0x%lx\n", (unsigned long)elf_header.e_entry);
-
-close(fd);
 return (0);
 }
