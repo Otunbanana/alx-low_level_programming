@@ -1,55 +1,154 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <elf.h>
+#include "main.h"
 
+#define REV(n) (((n) << 24) | (((n) >> 16) << 24) >> 16 | /
+(((n) << 16) >> 24) << 16 | ((n) >> 24))
 /**
-* main - displays the information contained in the ELF header at the start
-* of an ELF file.
-*
-* @argc: The number of arguments passed on the command line.
-* @argv: The arguments passed on the command line.
-* Return: 0 0r 1 on error.
+* verify- verify the file if is an ELF
+* @e_ident: ELF struct
+* return: 0.
 */
 
+void verify(unsigned char *e_ident)
+{
+if (e_ident[0] == 0x7f && e_ident[1] == 'E' && e_ident[2] /
+== 'L' && e_ident[3] == 'F')
+{
+printf("ELF Header:\n");
+}
+else
+{
+dprintf(STDERR_FILENO, "Error: This file is not a valid ELF\n");
+exit(98);
+}
+}
+/**
+* magic - prints magic number
+* @e_ident: ELF struct
+* return: 0.
+*/
+void magic(unsigned char *e_ident)
+{
+int i;
+int limit = EI_NIDENT - 1;
+
+printf("  Magic:   ");
+for (i = 0; i < limit; i++)
+{
+printf("%02x ", e_ident[i]);
+}
+printf("%02x\n", e_ident[i]);
+}
+/**
+* class - print ELF class
+* @e_ident: ELF struct
+* return: 0.
+*/
+void class(unsigned char *e_ident)
+{
+printf("  Class:                             ");
+switch (e_ident[EI_CLASS])
+{
+case ELFCLASSNONE:
+printf("This class is invalid\n");
+break;
+case ELFCLASS32:
+printf("ELF32\n");
+break;
+case ELFCLASS64:
+printf("ELF64\n");
+break;
+default:
+printf("<unknown: %x>\n", e_ident[EI_CLASS]);
+break;
+}
+}
+/**
+* data - print data type
+* @e_ident: ELF struct
+* return: 0
+*/
+void data(unsigned char *e_ident)
+{
+printf("  Data:                              ");
+switch (e_ident[EI_DATA])
+{
+case ELFDATANONE:
+printf("Unknown data format\n");
+break;
+case ELFDATA2LSB:
+printf("2's complement, little endian\n");
+break;
+case ELFDATA2MSB:
+printf("2's complement, big endian\n");
+break;
+default:
+printf("<unknown: %x>\n", e_ident[EI_DATA]);
+break;
+}
+}
+/**
+* version - print the file version
+* @e_ident: ELF struct
+* return: 0.
+*/
+
+void version(unsigned char *e_ident)
+{
+printf("  Version:                           ");
+if (e_ident[EI_VERSION] == EV_CURRENT)
+{
+printf("%i (current)\n", EV_CURRENT);
+}
+else
+{
+printf("%i\n", e_ident[EI_VERSION]);
+}
+}
+/**
+* main - read ELF file.
+* @argc: the number of args
+* @argv: the Args variable
+* Return: 0 in success
+*/
 int main(int argc, char *argv[])
 {
-FILE *fp;
-Elf32_Ehdr ehdr;
-size_t nread;
+int fd, _read, _close;
+Elf64_Ehdr *file;
+
 if (argc != 2)
 {
-fprintf(stderr, "Usage: %s elf_filename\n", argv[0]);
-return (1);
+dprintf(STDERR_FILENO, "Usage: %s <elf_file>\n", argv[0]);
+exit(98);
 }
 
-fp = fopen(argv[1], "r");
-if (fp == NULL)
+file = malloc(sizeof(Elf64_Ehdr));
+if (file == NULL)
 {
-perror("fopen");
-return (1);
+dprintf(STDERR_FILENO, "Error: Memory allocation failed\n");
+exit(98);
 }
 
-nread = fread(&ehdr, sizeof(ehdr), 1, fp);
-if (nread != 1)
+fd = open(argv[1], O_RDONLY);
+if (fd == -1)
 {
-perror("fread");
-return (1);
+dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+exit(98);
 }
 
-printf("ELF Header:\n");
-printf("  Magic:   %#x\n", ehdr.e_ident[EI_MAG0]);
-printf("  Class:        %d\n", ehdr.e_class);
-printf("  Data:         %d\n", ehdr.e_data);
-printf("  Version:      %d (current)\n", ehdr.e_version);
-printf("  OS/ABI:       %s\n", elf_get_osabi(ehdr.e_ident[EI_OSABI]));
-printf("  ABI Version:  %d\n", ehdr.e_abiversion);
-printf("  Type:         %d (%s)\n", ehdr.e_type,
-ehdr.e_type == ET_EXEC ? "Executable file" :
-ehdr.e_type == ET_DYN ? "Shared object file" :
-ehdr.e_type == ET_REL ? "Relocatable file" :
-ehdr.e_type == ET_CORE ? "Core file" : "Unknown");
-printf("  Entry point address:               0x%x\n", ehdr.e_entry);
+_read = read(fd, file, sizeof(Elf64_Ehdr));
+if (_read == -1)
+{
+free(file);
+dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+exit(98);
+}
 
-fclose(fp);
+verify(file->e_ident);
+magic(file->e_ident);
+class(file->e_ident);
+data(file->e_ident);
+version(file->e_ident);
+
 return (0);
 }
