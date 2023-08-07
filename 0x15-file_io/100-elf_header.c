@@ -1,7 +1,7 @@
 #include <elf.h>
 #include "main.h"
 
-#define REV(n) (((n) << 24) | (((n) >> 16) << 24) >> 16 | /
+#define REV(n) (((n) << 24) | (((n) >> 16) << 24) >> 16 | \
 (((n) << 16) >> 24) << 16 | ((n) >> 24))
 /**
 * verify- verify the file if is an ELF
@@ -11,7 +11,7 @@
 
 void verify(unsigned char *e_ident)
 {
-if (e_ident[0] == 0x7f && e_ident[1] == 'E' && e_ident[2] /
+if (e_ident[0] == 0x7f && e_ident[1] == 'E' && e_ident[2] \
 == 'L' && e_ident[3] == 'F')
 {
 printf("ELF Header:\n");
