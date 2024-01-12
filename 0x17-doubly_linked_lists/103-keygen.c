@@ -3,37 +3,51 @@
 #include <string.h>
 
 /**
-* main - Generates and prints passwords for the crackme5 executable.
+* main - Generates and prints pws for the crackme5 executable.
 * @argc: The number of arguments supplied to the program.
 * @argv: An array of pointers to the arguments.
 *
 * Return: Always 0.
 */
-int main(int argc, char *argv[])
+int main(int __attribute__((__unused__)) argc, char *argv[])
 {
-char password[7], *codex;
+char pw[7], *codex;
 int len = strlen(argv[1]), i, tmp;
 
 codex = "A-CHRDw87lNS0E9B2TibgpnMVys5XzvtOGJcYLU+4mjW6fxqZeF3Qa1rPhdKIouk";
 
-password[0] = codex[(len ^ 59) & 63];
-password[1] = codex[((tmp = 0) + (tmp ^= 79) + (tmp ^= 85)) & 63];
-password[2] = codex[(tmp = 1, tmp *= tmp) & 63];
+tmp = (len ^ 59) & 63;
+pw[0] = codex[tmp];
 
-tmp = argv[1][0];
+tmp = 0;
 for (i = 0; i < len; i++)
-tmp = (tmp > argv[1][i]) ? tmp : argv[1][i];
-srand(tmp ^ 14);
-password[3] = codex[rand() & 63];
+tmp += argv[1][i];
+pw[1] = codex[(tmp ^ 79) & 63];
 
-password[4] = codex[(((tmp = 0) + (tmp += argv[1][0] * argv[1][0])) ^ 239) & 63];
+tmp = 1;
+for (i = 0; i < len; i++)
+tmp *= argv[1][i];
+pw[2] = codex[(tmp ^ 85) & 63];
+
+tmp = 0;
+for (i = 0; i < len; i++)
+{
+if (argv[1][i] > tmp)
+    tmp = argv[1][i];
+}
+srand(tmp ^ 14);
+pw[3] = codex[rand() & 63];
+
+tmp = 0;
+for (i = 0; i < len; i++)
+tmp += (argv[1][i] * argv[1][i]);
+pw[4] = codex[(tmp ^ 239) & 63];
 
 for (i = 0; i < argv[1][0]; i++)
 tmp = rand();
-password[5] = codex[(tmp ^= 229) & 63];
+pw[5] = codex[(tmp ^ 229) & 63];
 
-password[6] = '\0';
-printf("%s\n", password);
-
+pw[6] = '\0';
+printf("%s", pw);
 return (0);
 }
