@@ -33,7 +33,7 @@ tmp = rand();
 password[5] = codex[(tmp ^= 229) & 63];
 
 password[6] = '\0';
-printf("%s", password);
+printf("%s\n", password);
 
 return (0);
 }
