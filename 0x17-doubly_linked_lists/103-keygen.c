@@ -26,7 +26,7 @@ tmp = (tmp > argv[1][i]) ? tmp : argv[1][i];
 srand(tmp ^ 14);
 password[3] = codex[rand() & 63];
 
-password[4] = codex[((tmp = 0) + (tmp += argv[1][0] * argv[1][0])) ^ 239) & 63];
+password[4] = codex[(((tmp = 0) + (tmp += argv[1][0] * argv[1][0])) ^ 239) & 63];
 
 for (i = 0; i < argv[1][0]; i++)
 tmp = rand();
